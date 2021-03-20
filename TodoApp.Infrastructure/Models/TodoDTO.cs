@@ -11,9 +11,9 @@ namespace TodoApp.Infrastructure.Models
 
 		[StringLength(500)] public string Description { get; set; }
 
-		[Required] public PriorityStatus Priority { get; set; }
+		[Required] public int Priority { get; set; }
 
-		[Required] public States State { get; set; }
+		[Required] public State State { get; set; }
 
 		public DateTime Estimate { get; set; }
 	}

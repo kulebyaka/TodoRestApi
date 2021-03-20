@@ -3,12 +3,14 @@ using TodoApp.Infrastructure.Models;
 
 namespace TodoApp.Web.ViewModels
 {
-	public class TodoOverviewViewModel
+	public class TodoViewModel
 	{
 		public Guid Id { get; set; }
 
 		public string Title { get; set; }
 
-		public PriorityStatus Priority { get; set; }
+		public int Priority { get; set; }
+
+		public State State { get; set; }
 	}
 }

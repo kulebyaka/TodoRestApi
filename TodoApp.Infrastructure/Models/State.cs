@@ -1,10 +1,8 @@
 ﻿namespace TodoApp.Infrastructure.Models
 {
-	public enum States
+	public enum State
 	{
 		New,
-		Active,
 		Resolved,
-		Closed
 	}
 }

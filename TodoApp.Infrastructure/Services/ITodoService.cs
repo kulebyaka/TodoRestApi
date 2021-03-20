@@ -11,7 +11,7 @@ namespace TodoApp.Infrastructure.Services
 		Task<bool> CreateTodo(TodoDTO newTodo);
 		Task<TodoDTO> GetTodoById(Guid id);
 		Task<bool> UpdateTodo(TodoDTO updatedTodoDTO);
-		Task<bool> UpdateTodoState(Guid id, States newState);
+		Task<bool> UpdateTodoState(Guid id, State newState);
 		Task<bool> DeleteTodo(Guid id);
 	}
 }
