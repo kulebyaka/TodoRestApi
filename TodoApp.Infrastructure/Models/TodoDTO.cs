@@ -3,10 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TodoApp.Infrastructure.Models
 {
-	public class TodoDTO
+	public class TodoDTO : IDbEntity<Guid>
 	{
-		public Guid Id { get; set; }
-
+		public Guid Id { get; }
 		[Required] [StringLength(50)] public string Title { get; set; }
 
 		[StringLength(500)] public string Description { get; set; }

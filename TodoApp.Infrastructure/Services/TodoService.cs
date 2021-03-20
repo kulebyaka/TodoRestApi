@@ -8,14 +8,15 @@ using TodoApp.Infrastructure.Repositories;
 
 namespace TodoApp.Infrastructure.Services
 {
-	public class TodosService : ITodoService
+	public class TodoService : ITodoService
 	{
-		private readonly IRepository<TodoDTO> todos;
-		private readonly ILogger<TodosService> logger;
+		private readonly IRepository<TodoDTO, Guid> _todos;
+		private readonly ILogger<TodoService> _logger;
 
-		public TodosService(ILogger<TodosService> logger)
+		public TodoService(ILogger<TodoService> logger, IRepository<TodoDTO, Guid> todos)
 		{
-			this.logger = logger;
+			_logger = logger;
+			_todos = todos;
 		}
 
 		public async Task<List<TodoDTO>> GetTodoList()
@@ -23,12 +24,12 @@ namespace TodoApp.Infrastructure.Services
 			List<TodoDTO> allTodos = null;
 			try
 			{
-				IEnumerable<TodoDTO> result = await todos.GetAllAsync();
+				IEnumerable<TodoDTO> result = await _todos.GetAllAsync();
 				allTodos = result.ToList();
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Get all todos failed.");
+				_logger.LogError(ex, "Get all todos failed.");
 			}
 
 			return allTodos;
@@ -39,12 +40,12 @@ namespace TodoApp.Infrastructure.Services
 			var isCreated = false;
 			try
 			{
-				await todos.AddAsync(newTodo);
+				await _todos.AddAsync(newTodo);
 				isCreated = true;
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Create todo record failed.");
+				_logger.LogError(ex, "Create todo record failed.");
 			}
 
 			return isCreated;
@@ -55,11 +56,11 @@ namespace TodoApp.Infrastructure.Services
 			TodoDTO foundTodo = null;
 			try
 			{
-				foundTodo = await todos.GetByIdAsync(id);
+				foundTodo = await _todos.GetByIdAsync(id);
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Get todo by ID failed.");
+				_logger.LogError(ex, "Get todo by ID failed.");
 			}
 
 			return foundTodo;
@@ -70,7 +71,8 @@ namespace TodoApp.Infrastructure.Services
 			var isUpdated = false;
 			try
 			{
-				var foundTodo = await todos.GetByIdAsync(updatedTodoDTO.Id);
+				var foundTodo = await _todos.GetByIdAsync(updatedTodoDTO.Id);
+				// TODO: mapper
 				foundTodo.Title = updatedTodoDTO.Title;
 				foundTodo.Description = updatedTodoDTO.Description;
 				foundTodo.Priority = updatedTodoDTO.Priority;
@@ -80,7 +82,7 @@ namespace TodoApp.Infrastructure.Services
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Upadte todo failed.");
+				_logger.LogError(ex, "Upadte todo failed.");
 			}
 
 			return isUpdated;
@@ -91,12 +93,13 @@ namespace TodoApp.Infrastructure.Services
 			var isUpdated = false;
 			try
 			{
-				var foundTodo = await todos.GetByIdAsync(id);
+				var foundTodo = await _todos.GetByIdAsync(id);
 				foundTodo.State = newState;
+				isUpdated = true;
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Upadte todo failed.");
+				_logger.LogError(ex, "Upadte todo failed.");
 			}
 
 			return isUpdated;
@@ -107,12 +110,12 @@ namespace TodoApp.Infrastructure.Services
 			var isDeleted = false;
 			try
 			{
-				await todos.DeleteAsync(id);
+				await _todos.DeleteAsync(id);
 				isDeleted = true;
 			}
 			catch (Exception ex)
 			{
-				logger.LogError(ex, "Delete todo failed.");
+				_logger.LogError(ex, "Delete todo failed.");
 			}
 
 			return isDeleted;
