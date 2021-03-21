@@ -15,6 +15,9 @@
         <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
         <PackageReference Include="AutoMapper" Version="10.1.1"/>
         <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1"/>
+        <PackageReference Include="FluentValidation" Version="9.5.3"/>
+        <PackageReference Include="FluentValidation.AspNetCore" Version="9.5.3"/>
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.5.3"/>
         <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="5.0.4"/>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1"/>
         <PackageReference Include="Newtonsoft.Json" Version="9.0.1"/>
@@ -25,8 +28,9 @@
     <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
         <Content Remove="$(SpaRoot)**"/>
-        <Content Include="ClientApp\package-lock.json"/>
         <Content Include="ClientApp\package.json"/>
+        <Content Include="ClientApp\public\manifest.json"/>
+        <Content Include="ClientApp\tsconfig.json"/>
         <None Remove="$(SpaRoot)**"/>
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
         <None Update="Properties\launchSettings.json">
@@ -42,6 +46,19 @@
 
     <ItemGroup>
         <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\build\asset-manifest.json"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <TypeScriptCompile Include="ClientApp\src\API.ts"/>
+        <TypeScriptCompile Include="ClientApp\src\App.test.tsx"/>
+        <TypeScriptCompile Include="ClientApp\src\App.tsx"/>
+        <TypeScriptCompile Include="ClientApp\src\components\AddTodo.tsx"/>
+        <TypeScriptCompile Include="ClientApp\src\components\TodoItem.tsx"/>
+        <TypeScriptCompile Include="ClientApp\src\index.tsx"/>
+        <TypeScriptCompile Include="ClientApp\src\react-app-env.d.ts"/>
+        <TypeScriptCompile Include="ClientApp\src\setupTests.ts"/>
+        <TypeScriptCompile Include="ClientApp\src\type.d.ts"/>
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
