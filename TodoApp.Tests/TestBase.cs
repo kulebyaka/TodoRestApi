@@ -5,7 +5,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DryIoc;
+using Autofac;
+using Autofac.Core;
 using Microsoft.Extensions.Logging;
 using Moq;
 using TodoApp.Infrastructure.IdGenerators;
@@ -17,12 +18,13 @@ namespace TodoApp.Tests
 	{
 		protected readonly List<string> logMessages = new();
 
-		protected Container Container { get; set; }
+		protected IContainer Container { get; set; }
 
 		public virtual void Setup()
 		{
-			Container = new Container();
+			var builder = new ContainerBuilder();
 			RegisterCommonServices();
+			Container = builder.Build();
 		}
 
 		private void RegisterCommonServices()

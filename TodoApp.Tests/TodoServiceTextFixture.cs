@@ -1,5 +1,6 @@
 using System.Collections.Generic;
-using DryIoc;
+using System.Threading.Tasks;
+using Autofac;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
@@ -7,6 +8,7 @@ using TodoApp.Infrastructure.IdGenerators;
 using TodoApp.Infrastructure.Models;
 using TodoApp.Infrastructure.Repositories;
 using TodoApp.Infrastructure.Services;
+using FluentAssertions;
 
 namespace TodoApp.Tests
 {
@@ -19,23 +21,33 @@ namespace TodoApp.Tests
 		[SetUp]
 		public override void Setup()
 		{
-			base.Setup();
+			var builder = new ContainerBuilder();
+			builder.RegisterType<TodoService>().As<ITodoService>().InstancePerLifetimeScope();
+			builder.RegisterType<TodoRepository>().As<IRepository<TodoDTO>>().SingleInstance();
 
-			Container.Register<ITodoService, TodoService>();
-			Container.Register<IRepository<TodoDTO>, TodoRepository>(Reuse.Singleton);
+			Container = builder.Build();
 
 			IRepository<TodoDTO> todoRepository = CreateRepository<IRepository<TodoDTO>, TodoDTO>(() => _todoStorage, new GuidIdGenerator(), ramec => ramec.Id);
-			Container.Use(todoRepository);
-			Container.RegisterInstance(todoRepository);
+			builder.RegisterInstance(todoRepository);
 
 			Mock<ILogger<TodoService>> cartServiceLogger = CreateLogger<TodoService>(a => logMessages.Add(a));
-			Container.Use(cartServiceLogger.Object);
-			Container.RegisterInstance(cartServiceLogger.Object);
+			builder.RegisterInstance(cartServiceLogger.Object);
 		}
 
 		[Test]
-		public void Test()
+		public async Task Test()
 		{
+			var service = Container.Resolve<ITodoService>();
+
+			var x = await service.CreateTodo(new TodoDTO()
+			{
+				Title = "TestTodoTitle",
+				Priority = 5,
+				State = State.New
+			});
+
+			var all = await service.GetTodoList();
+			all.Count.Should().BeGreaterThan(0);
 		}
 	}
 }
