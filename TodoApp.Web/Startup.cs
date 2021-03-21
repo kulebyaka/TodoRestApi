@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Autofac;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -74,10 +75,18 @@ namespace TodoApp.Web
 				.AddAutoMapper(typeof(Startup))
 				.AddSwagger();
 
+			services.AddControllers()
+				.AddFluentValidation(s =>
+				{
+					s.RegisterValidatorsFromAssemblyContaining<Startup>();
+					s.RunDefaultMvcValidationAfterFluentValidationExecutes = false;
+				});
+
 			services.AddRouting();
 			// Add framework services.
 			services.AddControllers();
 			services.AddHealthChecks();
+
 
 			// In production, the React files will be served from this directory
 			services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
@@ -100,7 +109,6 @@ namespace TodoApp.Web
 			else
 			{
 				app.UseExceptionHandler("/Error");
-				// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 				app.UseHsts();
 			}
 

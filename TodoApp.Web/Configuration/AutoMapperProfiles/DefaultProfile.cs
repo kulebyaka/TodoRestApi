@@ -2,7 +2,7 @@
 using TodoApp.Infrastructure.Models;
 using TodoApp.Web.ViewModels;
 
-namespace TodoApp.Web.AutoMapperProfiles
+namespace TodoApp.Web.Configuration.AutoMapperProfiles
 {
 	public class DefaultProfile : Profile
 	{
