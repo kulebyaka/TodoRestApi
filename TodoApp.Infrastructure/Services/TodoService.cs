@@ -74,10 +74,8 @@ namespace TodoApp.Infrastructure.Services
 				var foundTodo = await _todos.GetByIdAsync(updatedTodoDTO.Id);
 				// TODO: mapper
 				foundTodo.Title = updatedTodoDTO.Title;
-				foundTodo.Description = updatedTodoDTO.Description;
 				foundTodo.Priority = updatedTodoDTO.Priority;
 				foundTodo.State = updatedTodoDTO.State;
-				foundTodo.Estimate = updatedTodoDTO.Estimate;
 				isUpdated = true;
 			}
 			catch (Exception ex)

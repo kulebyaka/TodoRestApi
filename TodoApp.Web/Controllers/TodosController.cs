@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TodoApp.Infrastructure.Models;
@@ -12,7 +13,7 @@ using TodoApp.Web.ViewModels;
 namespace TodoApp.Web.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("[controller]")]
 	public class TodosController : ControllerBase
 	{
 		private readonly ITodoService _todoService;
@@ -28,18 +29,24 @@ namespace TodoApp.Web.Controllers
 			this._logger = logger;
 		}
 
-		// GET: api/Todos
-		[HttpGet]
+		// GET: api/list
+		[HttpGet("list")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		public async Task<IEnumerable<TodoOverviewViewModel>> GetTodoList()
 		{
 			var todos = await _todoService.GetTodoList();
-			var result = _mapper.Map<List<TodoDTO>, IEnumerable<TodoOverviewViewModel>>(todos);
+			var result = _mapper.Map<IEnumerable<TodoDTO>, IEnumerable<TodoOverviewViewModel>>(todos);
 			return result;
 		}
 
-		// GET: api/Todos/id
-		[HttpGet("{id}", Name = "GetTodoById")]
-		public async Task<IActionResult> GetTodoById(Guid id)
+		// GET: api/id
+		[HttpGet("{id}")]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		public async Task<IActionResult> Get(Guid id)
 		{
 			var foundTodo = await _todoService.GetTodoById(id);
 			if (foundTodo == null)
@@ -56,7 +63,7 @@ namespace TodoApp.Web.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				return BadRequest();
+				return BadRequest(ModelState);
 			}
 
 			var isCreated = await _todoService.CreateTodo(newTodo);

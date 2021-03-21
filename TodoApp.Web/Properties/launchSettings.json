@@ -1,24 +1,28 @@
 ﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json" ,
   "iisSettings": {
-    "windowsAuthentication": false,
-    "anonymousAuthentication": true,
+    "windowsAuthentication": false ,
+    "anonymousAuthentication": true ,
     "iisExpress": {
-      "applicationUrl": "http://localhost:37678",
+      "applicationUrl": "http://localhost:37678" ,
       "sslPort": 44356
     }
-  },
+  } ,
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
-      "launchBrowser": true,
+    "Swagger": {
+      "commandName": "Project" ,
+      "launchBrowser": true ,
+      "launchUrl": "swagger" ,
+      "applicationUrl": "https://localhost:5001;http://localhost:5000" ,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
-    },
+    } ,
     "TodoApp.Web": {
-      "commandName": "Project",
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:5001;http://localhost:5000",
+      "commandName": "Project" ,
+      "launchBrowser": true ,
+      "launchUrl": "todos" ,
+      "applicationUrl": "https://localhost:5001;http://localhost:5000" ,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
