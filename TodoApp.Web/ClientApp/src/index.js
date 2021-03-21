@@ -1,18 +1,34 @@
-import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import Typography from '@material-ui/core/Typography';
+import TodoForm from './TodoForm';
+import TodoList from './TodoList';
+import useTodoState from './useTodoState';
+import './styles.css';
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
+const App = () => {
+    const {todos, addTodo, deleteTodo} = useTodoState([]);
+
+    return (
+        <div className="App">
+            <Typography component="h1" variant="h2">
+                Todos
+            </Typography>
+
+            <TodoForm
+                saveTodo={todoText => {
+                    const trimmedText = todoText.trim();
+
+                    if (trimmedText.length > 0) {
+                        addTodo(trimmedText);
+                    }
+                }}
+            />
+
+            <TodoList todos={todos} deleteTodo={deleteTodo}/>
+        </div>
+    );
+};
+
 const rootElement = document.getElementById('root');
-
-ReactDOM.render(
-  <BrowserRouter basename={baseUrl}>
-    <App />
-  </BrowserRouter>,
-  rootElement);
-
-registerServiceWorker();
-
+ReactDOM.render(<App/>, rootElement);
