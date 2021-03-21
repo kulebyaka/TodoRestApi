@@ -4,7 +4,7 @@ using TodoApp.Infrastructure.Models;
 
 namespace TodoApp.Infrastructure.Repositories
 {
-	public class TodoRepository : InMemoryRepository<TodoDTO, Guid>
+	public class TodoRepository : InMemoryRepository<TodoDTO>
 	{
 		public TodoRepository(IList<TodoDTO> defaultCollection) : base(defaultCollection)
 		{

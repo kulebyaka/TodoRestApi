@@ -1,7 +1,7 @@
 ﻿namespace TodoApp.Infrastructure.Models
 {
-	public interface IDbEntity<out TKey>
+	public interface IDbEntity<TKey>
 	{
-		public TKey Id { get; }
+		public TKey Id { get; set; }
 	}
 }

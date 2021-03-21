@@ -8,9 +8,10 @@ using TodoApp.Infrastructure.Models;
 
 namespace TodoApp.Infrastructure.Repositories
 {
-	public class InMemoryRepository<TItem, TKey> : IRepository<TItem, TKey> where TItem : IDbEntity<TKey>
+	public class InMemoryRepository<TItem> : IRepository<TItem> where TItem : IDbEntity<Guid>
 	{
-		private readonly IDictionary<TKey, TItem> _entities;
+		private const string msgWrongTypeOfPrimaryKey = "Wrong type of primary key for in-memory collection";
+		private readonly IDictionary<Guid, TItem> _entities;
 
 		public InMemoryRepository(IList<TItem> defaultCollection)
 		{
@@ -22,10 +23,19 @@ namespace TodoApp.Infrastructure.Repositories
 			return _entities.Values;
 		}
 
-		public async Task<TItem> GetByIdAsync(TKey id, CancellationToken cancellationToken = default)
+		public async Task<TItem> GetByIdAsync<TKey>(TKey id, CancellationToken cancellationToken = default)
 		{
-			_entities.TryGetValue(id, out TItem o);
+			//TODO: Error handling
+			if (id is not Guid guid)
+				throw new Exception(msgWrongTypeOfPrimaryKey);
+
+			_entities.TryGetValue(guid, out TItem o);
 			return o;
+		}
+
+		public async Task DeleteAsync(TItem item, CancellationToken cancellationToken = default)
+		{
+			_entities.Remove(item.Id);
 		}
 
 		public async Task<bool> ExistAsync(Expression<Func<TItem, bool>> prediction, CancellationToken cancellationToken = default)
@@ -36,11 +46,6 @@ namespace TodoApp.Infrastructure.Repositories
 		public async Task AddAsync(TItem item, CancellationToken cancellationToken = default)
 		{
 			_entities.Add(item.Id, item);
-		}
-
-		public async Task DeleteAsync(TKey id, CancellationToken cancellationToken = default)
-		{
-			_entities.Remove(id);
 		}
 
 		public async Task UpdateAsync(TItem item, CancellationToken cancellationToken = default)

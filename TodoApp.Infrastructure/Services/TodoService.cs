@@ -10,10 +10,10 @@ namespace TodoApp.Infrastructure.Services
 {
 	public class TodoService : ITodoService
 	{
-		private readonly IRepository<TodoDTO, Guid> _todos;
+		private readonly IRepository<TodoDTO> _todos;
 		private readonly ILogger<TodoService> _logger;
 
-		public TodoService(ILogger<TodoService> logger, IRepository<TodoDTO, Guid> todos)
+		public TodoService(ILogger<TodoService> logger, IRepository<TodoDTO> todos)
 		{
 			_logger = logger;
 			_todos = todos;
@@ -110,7 +110,7 @@ namespace TodoApp.Infrastructure.Services
 			var isDeleted = false;
 			try
 			{
-				await _todos.DeleteAsync(id);
+				await _todos.DeleteAsync(new TodoDTO() {Id = id});
 				isDeleted = true;
 			}
 			catch (Exception ex)
