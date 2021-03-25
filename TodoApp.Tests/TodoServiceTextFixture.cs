@@ -43,7 +43,7 @@ namespace TodoApp.Tests
 			{
 				Title = "TestTodoTitle",
 				Priority = 5,
-				State = State.New
+				State = State.NotStarted
 			});
 
 			var all = await service.GetTodoList();

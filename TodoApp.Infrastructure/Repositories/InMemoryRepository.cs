@@ -11,7 +11,7 @@ namespace TodoApp.Infrastructure.Repositories
 	public class InMemoryRepository<TItem> : IRepository<TItem> where TItem : IDbEntity<Guid>
 	{
 		private const string msgWrongTypeOfPrimaryKey = "Wrong type of primary key for in-memory collection";
-		private readonly IDictionary<Guid, TItem> _entities;
+		protected readonly IDictionary<Guid, TItem> _entities;
 
 		public InMemoryRepository(IList<TItem> defaultCollection)
 		{

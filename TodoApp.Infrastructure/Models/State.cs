@@ -2,7 +2,8 @@
 {
 	public enum State
 	{
-		New,
-		Resolved,
+		NotStarted,
+		InProgress,
+		Completed
 	}
 }

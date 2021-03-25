@@ -35,20 +35,23 @@ namespace TodoApp.Infrastructure.Services
 			return allTodos;
 		}
 
-		public async Task<bool> CreateTodo(TodoDTO newTodo)
+		public async Task<TodoDTO> CreateTodo(TodoDTO newTodo)
 		{
-			var isCreated = false;
 			try
 			{
+				// TODO: move to mappping
+				if (newTodo.Id == Guid.Empty)
+					newTodo.Id = Guid.NewGuid();
+
 				await _todos.AddAsync(newTodo);
-				isCreated = true;
 			}
 			catch (Exception ex)
 			{
 				_logger.LogError(ex, "Create todo record failed.");
+				throw;
 			}
 
-			return isCreated;
+			return newTodo;
 		}
 
 		public async Task<TodoDTO> GetTodoById(Guid id)
@@ -93,6 +96,7 @@ namespace TodoApp.Infrastructure.Services
 			{
 				var foundTodo = await _todos.GetByIdAsync(id);
 				foundTodo.State = newState;
+				_todos.SaveChanges();
 				isUpdated = true;
 			}
 			catch (Exception ex)
