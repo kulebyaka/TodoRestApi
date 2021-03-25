@@ -1,69 +1,44 @@
-import React, {useEffect, useState} from 'react'
-import TodoItem from './components/TodoItem'
-import AddTodo from './components/AddTodo'
-import {getTodos, addTodo, updateTodo, deleteTodo} from './API'
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
 
-const App: React.FC = () => {
-  const [todos, setTodos] = useState<ITodo[]>([])
+import AddTodo from "./components/add-todo";
+import TodoOverview from "./components/todo-overview";
+import TodoList from "./components/todo-list";
+import {Link, Switch, Route, BrowserRouter} from "react-router-dom";
 
-  useEffect(() => {
-    fetchTodos()
-  }, [])
-
-  const fetchTodos = (): void => {
-    getTodos()
-        .then(({data: {todos}}: ITodo[] | any) => setTodos(todos))
-        .catch((err: Error) => console.log(err))
-  }
-
-  const handleSaveTodo = (e: React.FormEvent, formData: ITodo): void => {
-    e.preventDefault()
-    addTodo(formData)
-        .then(({status, data}) => {
-          if (status !== 201) {
-            throw new Error('Error! Todo not saved')
-          }
-          setTodos(data.todos)
-        })
-        .catch((err) => console.log(err))
-  }
-
-  const handleUpdateTodo = (todo: ITodo): void => {
-    updateTodo(todo)
-        .then(({status, data}) => {
-          if (status !== 200) {
-            throw new Error('Error! Todo not updated')
-          }
-          setTodos(data.todos)
-        })
-        .catch((err) => console.log(err))
-  }
-
-  const handleDeleteTodo = (_id: string): void => {
-    deleteTodo(_id)
-        .then(({status, data}) => {
-          if (status !== 200) {
-            throw new Error('Error! Todo not deleted')
-          }
-          setTodos(data.todos)
-        })
-        .catch((err) => console.log(err))
-  }
-
+function App() {
   return (
-      <main className='App'>
-        <h1>My Todos</h1>
-        <AddTodo saveTodo={handleSaveTodo}/>
-        {todos.map((todo: ITodo) => (
-            <TodoItem
-                key={todo.id}
-                updateTodo={handleUpdateTodo}
-                deleteTodo={handleDeleteTodo}
-                todo={todo}
-            />
-        ))}
-      </main>
-  )
+	  <BrowserRouter>
+		<div>
+		  <nav className="navbar navbar-expand navbar-dark bg-dark">
+			<a href="/todos" className="navbar-brand">
+			  Barclays
+			</a>
+			<div className="navbar-nav mr-auto">
+			  <li className="nav-item">
+				<Link to={"/todos"} className="nav-link">
+				  Todos
+				</Link>
+			  </li>
+			  <li className="nav-item">
+				<Link to={"/add"} className="nav-link">
+				  Add
+				</Link>
+			  </li>
+			</div>
+		  </nav>
+
+		  <div className="container mt-3">
+			<Switch>
+			  <Route exact path={["/", "/todos"]} component={TodoList}/>
+			  <Route exact path="/add" component={AddTodo}/>
+			  <Route path="/todos/:id" component={TodoOverview}/>
+			</Switch>
+		  </div>
+		</div>
+	  </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

@@ -34,11 +34,11 @@ namespace TodoApp.Web.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
-		public async Task<IEnumerable<TodoOverviewViewModel>> GetTodoList()
+		public async Task<IActionResult> GetTodoList()
 		{
 			var todos = await _todoService.GetTodoList();
-			var result = _mapper.Map<IEnumerable<TodoDTO>, IEnumerable<TodoOverviewViewModel>>(todos);
-			return result;
+			var result = _mapper.Map<IEnumerable<TodoDTO>, IEnumerable<TodoViewModel>>(todos);
+			return Ok(result);
 		}
 
 		// GET: api/id
@@ -51,36 +51,36 @@ namespace TodoApp.Web.Controllers
 			var foundTodo = await _todoService.GetTodoById(id);
 			if (foundTodo == null)
 			{
-				return BadRequest();
+				return BadRequest(StatusCodes.Status404NotFound);
 			}
 
 			return Ok(_mapper.Map<TodoViewModel>(foundTodo));
 		}
 
 		// POST: api/Todos
-		[HttpPost]
-		public async Task<IActionResult> CreateTodo([FromBody] TodoDTO newTodo)
+		[HttpPost("add")]
+		public async Task<IActionResult> CreateTodo([FromBody] TodoViewModel newTodo)
 		{
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
 			}
 
-			var isCreated = await _todoService.CreateTodo(newTodo);
+			TodoDTO isCreated = await _todoService.CreateTodo(_mapper.Map<TodoDTO>(newTodo));
 
-			if (isCreated == false)
+			if (isCreated == null)
 			{
 				return BadRequest();
 			}
 
-			return Ok();
+			return Ok(_mapper.Map<TodoViewModel>(isCreated));
 		}
 
 		// PUT: api/Todos/id
 		[HttpPut("{id}")]
-		public async Task<IActionResult> UpdateTodo(string id, [FromBody] TodoDTO updatedTodo)
+		public async Task<IActionResult> UpdateTodo(string id, [FromBody] TodoViewModel updatedTodo)
 		{
-			var isUpdated = await _todoService.UpdateTodo(updatedTodo);
+			var isUpdated = await _todoService.UpdateTodo(_mapper.Map<TodoDTO>(updatedTodo));
 			if (isUpdated == false)
 			{
 				return BadRequest();
@@ -90,10 +90,10 @@ namespace TodoApp.Web.Controllers
 		}
 
 		// PUT: api/Todos/id
-		[HttpPatch("{id}")]
-		public async Task<IActionResult> PatchTodo(string id, [FromBody] TodoDTO updatedTodo)
+		[HttpPatch("{id}/complete")]
+		public async Task<IActionResult> CompleteTodo([Required] Guid id)
 		{
-			var isUpdated = await _todoService.UpdateTodo(updatedTodo);
+			bool isUpdated = await _todoService.UpdateTodoState(id, State.Completed);
 			if (isUpdated == false)
 			{
 				return BadRequest();
